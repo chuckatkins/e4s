@@ -47,6 +47,19 @@ spack:
             ^warpx dims=3: dims3
             ^warpx dims=rz: dimsRZ
 
+        # Vis tool flavors
+        paraview:
+          suffixes:
+            +qt~osmesa: gui
+            ~qt~osmesa: server-glx
+            ~qt~osmesa: server-osmesa
+        visit:
+          suffixes:
+            +gui~osmesa: gui
+            ~gui~osmesa: server-glx
+            ~gui+osmesa: server-osmesa
+
+
   packages:
     all:
       compiler: [gcc@9.4.0]
@@ -83,17 +96,43 @@ spack:
     mesa:
       variants: +glx +osmesa +llvm
 
+  definitions:
+    - paraview_specs:
+      - matrix:
+        - [paraview]
+        - [+qt~osmesa, ~qt~osmesa, ~qt+osmesa]
+    - visit_specs:
+      - matrix:
+        - [visit]
+        - [+gui~osmesa, ~gui~osmesa, ~gui+osmesa]
+
   specs:
   # CPU
+  - matrix:
+    - - ecp-data-vis-sdk ~cuda ~rocm ~sensei ~visit
+          +adios2
+          +ascent
+          +cinema
+          +darshan
+          +faodel
+          +hdf5
+          +paraview
+          +pnetcdf
+          +sz
+          +unifyfs
+          +veloc
+          +vtkm
+          +zfp
+    - [$^paraview_specs]
   - adios
-  - adios2
+  #- adios2 # Provided by ecp-data-vis-sdk +adios2
   - alquimia
   - aml
   - amrex
   - arborx
   - archer
   - argobots
-  - ascent
+  #- ascent # Provided by ecp-data-vis-sdk +ascent
   - axom
   - bolt
   - bricks
@@ -103,12 +142,12 @@ spack:
   - chai ~benchmarks ~tests
   - charliecloud
   - conduit
-  - darshan-runtime
-  - darshan-util
-  - datatransferkit
+  #- darshan-runtime # Provided by ecp-data-vis-sdk +darshan
+  #- darshan-util
+  - datatransferkit-rc3
   - dyninst
   - exaworks
-  - faodel
+  #- faodel # Provided by ecp-data-vis-sdk +faodel
   - flecsi
   - flit
   - flux-core
@@ -121,7 +160,7 @@ spack:
   - gotcha
   - gptune
   - h5bench
-  - hdf5 +fortran +hl +shared
+  #- hdf5 +fortran +hl +shared # Provided by ecp-data-vis-sdk +hdf5
   - heffte +fftw
   - hpctoolkit
   - hpx networking=mpi
@@ -149,8 +188,8 @@ spack:
   - openpmd-api
   - papi
   - papyrus
-  - parallel-netcdf
-  - paraview +qt
+  #- parallel-netcdf # Provided by ecp-data-vis-sdk +pnetcdf
+  #- paraview +qt # Provided by ecp-data-vis-sdk +paraview
   - parsec ~cuda
   - pdt
   - petsc
@@ -160,7 +199,7 @@ spack:
   - precice
   - pruners-ninja
   - pumi
-  - py-cinemasci
+  #- py-cinemasci # Provided by ecp-data-vis-sdk +cinema
   - py-jupyterhub
   - py-libensemble
   - py-petsc4py
@@ -179,8 +218,7 @@ spack:
   - superlu
   - superlu-dist
   - swig
-  - swig-fortran
-  - sz
+  #- sz # Provided by ecp-data-vis-sdk +sz
   - tasmanian
   - tau +mpi +python
   - trilinos +amesos +amesos2 +anasazi +aztec +belos +boost +epetra +epetraext +ifpack
@@ -190,10 +228,11 @@ spack:
   - turbine
   - umap
   - umpire
-  - unifyfs
+  #- unifyfs # Provided by ecp-data-vis-sdk +unifyfs
   - upcxx
   - variorum
-  - veloc
-  - vtk-m
+  #- veloc # Provided by ecp-data-vis-sdk +veloc
+  - $visit_specs
+  #- vtk-m # Provided by ecp-data-vis-sdk +vtk-m
   - wannier90
-  - zfp
+  #- zfp # Provided by ecp-data-vis-sdk +zfp
